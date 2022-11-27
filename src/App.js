@@ -9,7 +9,10 @@ function App() {
   }
 
   useEffect(() => {
-    window.addEventListener("resize", checkSize)
+    window.addEventListener("resize", checkSize);
+    return () => {
+      window.removeEventListener("resize", checkSize);
+    }
   })
 
   return (
