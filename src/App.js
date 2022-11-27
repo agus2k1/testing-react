@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from "react";
 import "./App.css"
 
-function App() {
-  const [size, setSize] = useState(window.innerWidth);
+const url = "https://api.github.com/users";
 
-  const checkSize = () => {
-    setSize(window.innerWidth);
+function App() {
+  const [users, setUsers] = useState([]);
+
+  const getUsers = async() => {
+    const response = await fetch(url);
+    const users = await response.json();
+    setUsers(users);
   }
 
   useEffect(() => {
-    window.addEventListener("resize", checkSize);
-    return () => {
-      window.removeEventListener("resize", checkSize);
-    }
-  })
-
+    getUsers();
+  }, [])
+  
   return (
     <div className="container">
-      <h1>Window</h1>
-      <h2>{size} PX</h2>
+      <h1>Github Users</h1>
+      <ul>
+        {users.map(user => {
+          const {id, login, avatar_url, html_url} = user;
+          return <li key={id}>
+            <img src={avatar_url} alt={login}></img>
+            <div>
+              <h4>{login}</h4>
+              <a href={html_url}>Profile</a>
+            </div>
+          </li>
+      })}
+      </ul>
+      
     </div>
   );
 }
