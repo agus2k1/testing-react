@@ -1,22 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css"
 
 function App() {
-  const [value, setValue] = useState(0);
+  const [size, setSize] = useState(window.innerWidth);
 
-  const handleIncrease = () => {
-    setTimeout(() => {
-      setValue(prevValue => {
-        return prevValue + 1;
-      });
-    }, 2000);
+  const checkSize = () => {
+    setSize(window.innerWidth);
   }
+
+  useEffect(() => {
+    window.addEventListener("resize", checkSize)
+  })
 
   return (
     <div className="container">
-      <h2>Regular Counter</h2>
-      <h1>{value}</h1>
-      <button onClick={handleIncrease} style={{padding: "1rem 3rem"}}>Increase</button>
+      <h1>Window</h1>
+      <h2>{size} PX</h2>
     </div>
   );
 }
