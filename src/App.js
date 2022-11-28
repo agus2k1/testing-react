@@ -1,39 +1,54 @@
 import React, { useState, useEffect } from "react";
 import "./App.css"
 
-const url = "https://api.github.com/users";
+const url = "https://api.github.com/users/QuincyLarson";
 
 function App() {
-  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [user, setUser] = useState("Default user");
 
-  const getUsers = async() => {
-    const response = await fetch(url);
-    const users = await response.json();
-    setUsers(users);
+  const getUser = () => {
+    fetch(url)
+      .then(resp => {
+        if (resp.status >= 200 && resp.status <= 299){
+          return resp.json();
+        } else {
+          setIsLoading(false);
+          setIsError(true);
+          throw new Error(resp.statusText);
+        }
+      })
+      .then(user => {
+        const {login} = user;
+        setUser(login);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        setIsError(true);
+      })
+      
   }
 
   useEffect(() => {
-    getUsers();
+    getUser();
   }, [])
-  
-  return (
-    <div className="container">
-      <h1>Github Users</h1>
-      <ul>
-        {users.map(user => {
-          const {id, login, avatar_url, html_url} = user;
-          return <li key={id}>
-            <img src={avatar_url} alt={login}></img>
-            <div>
-              <h4>{login}</h4>
-              <a href={html_url}>Profile</a>
-            </div>
-          </li>
-      })}
-      </ul>
-      
+
+  if (isLoading){
+    return <div className="container">
+      <h1>Loading...</h1>
     </div>
-  );
+  }
+
+  if (isError){
+    return <div className="container">
+      <h1>Error...</h1>
+    </div>
+  }
+
+  return <div className="container">
+    <h1>{user}</h1>
+  </div>
 }
 
 export default App;
