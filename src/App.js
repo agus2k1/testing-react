@@ -4,51 +4,33 @@ import "./App.css"
 const url = "https://api.github.com/users/QuincyLarson";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const [user, setUser] = useState("Default user");
+  const [firstName, setFirstName] = useState("");
+  const [email, setEmail] = useState("");
 
-  const getUser = () => {
-    fetch(url)
-      .then(resp => {
-        if (resp.status >= 200 && resp.status <= 299){
-          return resp.json();
-        } else {
-          setIsLoading(false);
-          setIsError(true);
-          throw new Error(resp.statusText);
-        }
-      })
-      .then(user => {
-        const {login} = user;
-        setUser(login);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        setIsError(true);
-      })
-      
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("submited");
+    console.log(firstName);
+    console.log(email);
   }
 
-  useEffect(() => {
-    getUser();
-  }, [])
-
-  if (isLoading){
-    return <div className="container">
-      <h1>Loading...</h1>
-    </div>
-  }
-
-  if (isError){
-    return <div className="container">
-      <h1>Error...</h1>
-    </div>
-  }
-
-  return <div className="container">
-    <h1>{user}</h1>
-  </div>
+  return (
+    <>
+      <article className="container">
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="firstName">Name : </label>
+            <input type="text" id="firstName" name="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
+          </div>
+          <div>
+            <label htmlFor="email">Email : </label>
+            <input type="text" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+          </div>
+          <button type="submit">Add Person</button>
+        </form>
+      </article>
+    </>
+  )
 }
 
 export default App;
