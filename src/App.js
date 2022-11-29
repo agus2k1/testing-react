@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css"
-
-const url = "https://api.github.com/users/QuincyLarson";
 
 function App() {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [people, setPeople] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("submited");
-    console.log(firstName);
-    console.log(email);
+    if (firstName && email){
+      const person = {id: new Date().getTime().toString(), firstName, email };
+      setPeople(currentPeople => {
+        return [...currentPeople, person];
+      })
+      setFirstName("");
+      setEmail("");
+    } else {
+      console.log("empty values");
+    }
   }
 
   return (
@@ -28,6 +34,12 @@ function App() {
           </div>
           <button type="submit">Add Person</button>
         </form>
+        {
+          people.map(person => {
+            const {id, firstName, email} = person;
+            return <div key={id}>{firstName}, {email}</div>
+          })
+        }
       </article>
     </>
   )
