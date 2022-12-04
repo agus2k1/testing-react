@@ -1,50 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
+import Modal from "./Modal";
 import "./App.css"
 
-function App() {
-  const [person, setPerson] = useState({ firstName: "", email: "", age: "" });
-  const [people, setPeople] = useState([]);
-
-  const handleChange = (e) => {
-    const name  = e.target.name;
-    const value  = e.target.value;
-    setPerson({...person, [name]: value});
+// reducer function
+const reducer = (state, action) => {
+  switch (action.type){
+    case "TESTING":
+      return {}
+    default:
+      break;
   }
+}
+
+const defaultState = {
+  people: [],
+  isModalOpen: false,
+  modalContent: ""
+}
+
+function App() {
+  const [name, setName] = useState("");
+  const [state, dispatch] = useReducer(reducer, defaultState);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (person.firstName && person.email && person.age){
-      const newPerson = {...person, id: new Date().getTime().toString()};
-      setPeople([...people, newPerson]);
-      setPerson({ firstName: "", email: "", age: "" });
+    if (name){
+      dispatch({type: "TESTING"});
     }
   }
 
   return (
     <>
-      <article className="container">
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="firstName">Name : </label>
-            <input type="text" id="firstName" name="firstName" value={person.firstName} onChange={handleChange}/>
+      {state.isModalOpen && <Modal modalContent={state.modalContent}/>}
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
+        </div>
+        <button type="submit">add</button>
+      </form>
+      {state.people.map(person => {
+        return (
+          <div key={person.id}>
+            <h4>{person.name}</h4>
           </div>
-          <div>
-            <label htmlFor="email">Email : </label>
-            <input type="text" id="email" name="email" value={person.email} onChange={handleChange}/>
-          </div>
-          <div>
-            <label htmlFor="age">Age : </label>
-            <input type="number" id="age" name="age" value={person.age} onChange={handleChange}/>
-          </div>
-          <button type="submit" onClick={handleSubmit}>Add Person</button>
-        </form>
-        {
-          people.map(person => {
-            const {id, firstName, email, age} = person;
-            return <div key={id}>{firstName}, {email}, {age}</div>
-          })
-        }
-      </article>
+        )
+      })}
     </>
   )
 }
