@@ -1,52 +1,28 @@
-import React, { useState, useReducer } from "react";
-import Modal from "./Modal";
-import "./App.css"
+import React from 'react';
+// react router
+import { BrowserRouter as Router, Route, Routes, Switch } from "react-router-dom";
+// pages
+import Home from './Home';
+import Error from './Error';
+import About from './About';
+import People from './People';
+import Person from './Person';
+import Navbar from './Navbar';
 
-// reducer function
-const reducer = (state, action) => {
-  switch (action.type){
-    case "TESTING":
-      return {}
-    default:
-      break;
-  }
-}
-
-const defaultState = {
-  people: [],
-  isModalOpen: false,
-  modalContent: ""
-}
-
-function App() {
-  const [name, setName] = useState("");
-  const [state, dispatch] = useReducer(reducer, defaultState);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (name){
-      dispatch({type: "TESTING"});
-    }
-  }
-
+export default function App() {
   return (
-    <>
-      {state.isModalOpen && <Modal modalContent={state.modalContent}/>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-        </div>
-        <button type="submit">add</button>
-      </form>
-      {state.people.map(person => {
-        return (
-          <div key={person.id}>
-            <h4>{person.name}</h4>
-          </div>
-        )
-      })}
-    </>
+    <Router>
+        <Routes>
+            <Route path='/'>
+                <Home/>
+            </Route>
+            <Route path='/about'>
+                <About/>
+            </Route>
+            <Route path='/people'>
+                <People/>
+            </Route>
+        </Routes>
+    </Router>
   )
 }
-
-export default App;
